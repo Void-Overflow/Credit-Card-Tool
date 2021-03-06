@@ -1,0 +1,4 @@
+﻿  Validator.cpp
+C:\Users\dehla\Desktop\Visual Studio Projects\C++\Credit Card Validator\Validator.cpp(12,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\dehla\Desktop\Visual Studio Projects\C++\Credit Card Validator\Validator.cpp(14,12): warning C4552: '*': result of expression not used
+  Credit Card Validator.vcxproj -> C:\Users\dehla\Desktop\Visual Studio Projects\C++\Credit Card Validator\Debug\Credit Card Storage System.exe
