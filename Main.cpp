@@ -1,13 +1,19 @@
-#include <iostream>
 #include "Validator.h"
+
+#include <iostream>
+#include <string>
 
 int main() {
 	Validator validate;
-	Luhn_Algorigthem algorithem;
-	std::string num;
+	long long int num;
 	
-	std::cout << "Please enter a credit card number to be checked for validity: \n";
+	std::cout << "Please enter a credit card number\n";
 	std::cin >> num;
-	std::cout << validate.get_num(num) << " : " << algorithem.double_every_other_value(stoi(num));
+
+	validate.get_num(num);
+	validate.is_valid();
+
+	std::cout << validate.status;
+
 	return 0;
 }

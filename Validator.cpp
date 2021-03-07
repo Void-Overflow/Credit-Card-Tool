@@ -1,33 +1,34 @@
 #include "Validator.h"
 #include <string>
 
-unsigned long long Validator::get_num(std::string in) {
-	num = atoi(in.c_str());
+unsigned long long Validator::get_num(long long int in) {
+	num = in;
 	return num;
 }
 
-unsigned long long int Luhn_Algorigthem::double_every_other_value(unsigned long long int in) {
-	int counter = 10;
-	
-	for (int i = 0; i < std::to_string(in).length(); i++) {
-		if (i % 2 == 0) { //Is even
-			counter * 10;
-			doubled_val += (in % counter) * 2;
-		}
-		else { //Is odd
-			doubled_val += (in % counter);
-		}
-	}
+bool Validator::is_valid() {	
+    int nDigits = std::to_string(num).length();
 
-	return doubled_val;
-}
+    int nSum = 0, isSecond = false;
+    for (int i = nDigits - 1; i >= 0; i--) {
 
-bool Validator::is_valid() {
-	if (num <= 0)
-		return false;
-	
-	Luhn_Algorigthem Altorithem;
-	Altorithem.double_every_other_value(num);
+        int digit = std::to_string(num)[i] - '0';
+
+        if (isSecond == true)
+            digit = digit * 2;
+
+        nSum += digit / 10;
+        nSum += digit % 10;
+
+        isSecond = !isSecond;
+    }
+
+    if (nSum % 10 == 0) {
+        status = true;
+    }
+    else {
+        status = false;
+    }
 
 	return status;
 }
