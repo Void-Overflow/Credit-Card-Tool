@@ -1,19 +1,30 @@
 #include "Validator.h"
+#include "JsonConfig.h"
 
 #include <iostream>
 #include <string>
 
 int main() {
-	Validator validate;
-	long long int num;
+	Validator validation;
+	JsonConfig json("configurations.json");
+
+	json.configure_file();
+
+	unsigned long long int num;
 	
-	std::cout << "Please enter a credit card number\n";
+	std::cout << "Please enter a credit card number (with no spaces)\n";
 	std::cin >> num;
 
-	validate.get_num(num);
-	validate.is_valid();
+	validation.get_num(num);
+	validation.is_valid();
 
-	std::cout << validate.status;
+	while (validation.status == false) {
+		std::cout << "Not a valid credit card number, try again:\n";
+		std::cin >> num;
+
+		validation.get_num(num);
+		validation.is_valid();
+	}
 
 	return 0;
 }
