@@ -44,6 +44,9 @@
     <ClInclude Include="Json-cpp\include\json\forwards.h">
       <Filter>Json</Filter>
     </ClInclude>
+    <ClInclude Include="Json-cpp\include\json\writer.h">
+      <Filter>Json</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="configuration.json">

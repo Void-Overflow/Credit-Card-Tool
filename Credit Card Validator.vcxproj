@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="Json-cpp\include\json\forwards.h" />
     <ClInclude Include="Json-cpp\include\json\json.h" />
+    <ClInclude Include="Json-cpp\include\json\writer.h" />
     <ClInclude Include="JsonConfig.h" />
     <ClInclude Include="Validator.h" />
   </ItemGroup>

@@ -1,26 +1,50 @@
 #include "JsonConfig.h"
+
+#include "json/writer.h"
+
 #include <iostream>
+#include <string>
 
 JsonConfig::JsonConfig(std::string infile) {
-	file.open(infile);
+	file = infile;
 }
 
 bool JsonConfig::configure_file() {
-	Json::CharReaderBuilder builder;
+	in_file.open(file);
 	JSONCPP_STRING errs;
+	Json::CharReaderBuilder builder;
 
-	if (!parseFromStream(builder, file, &root, &errs)) {
-		std::cout << errs << std::endl;
+	if (!parseFromStream(builder, in_file, &root, &errs)) {
 		return EXIT_FAILURE;
 	}
 	
 	return true;
 }
 
-void JsonConfig::check_status() {
+bool JsonConfig::check_status() {
+	if (root["setup"]["done"] == "TRUE") {
+		firstName = root["setup"]["firstname"].asString();
+		lastName = root["setup"]["lastname"].asString();
 
+		status = true;
+		return true;
+	}
+	else {
+		status = false;
+		return false;
+	}
 }
 
-void JsonConfig::set_status() {
+bool JsonConfig::set_status() {
+	out_file.open(file);
 
+	root["setup"]["done"] = "TRUE";
+	root["setup"]["firstname"] = firstName;
+	root["setup"]["lastname"] = lastName;
+
+	out_file << root;
+	out_file.close();
+
+	status = true;
+	return true;
 }
