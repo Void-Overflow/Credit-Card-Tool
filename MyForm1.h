@@ -81,7 +81,6 @@ namespace CreditCardValidator {
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(183, 20);
 			this->textBox1->TabIndex = 1;
-			this->textBox1->TextChanged += gcnew System::EventHandler(this, &MyForm1::textBox1_TextChanged);
 			// 
 			// label2
 			// 
@@ -108,7 +107,7 @@ namespace CreditCardValidator {
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(32, 10);
+			this->label1->Location = System::Drawing::Point(32, 44);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(0, 13);
 			this->label1->TabIndex = 36;
@@ -126,7 +125,7 @@ namespace CreditCardValidator {
 			// button2
 			// 
 			this->button2->BackColor = System::Drawing::Color::ForestGreen;
-			this->button2->Location = System::Drawing::Point(85, 92);
+			this->button2->Location = System::Drawing::Point(83, 92);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(86, 28);
 			this->button2->TabIndex = 38;
@@ -154,16 +153,18 @@ namespace CreditCardValidator {
 		}
 #pragma endregion
 	private: System::Void MyForm1_Load(System::Object^ sender, System::EventArgs^ e) {
-		JsonConfig json("a");
+		JsonConfig json("configuration.json");
+
+		json.configure_file();
+		json.check_status();
+
 		this->label1->Text = "Welcome " + gcnew String(json.firstName.c_str()) + "! Please enter a valid credit card number!";
 	}
 		   
-	private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-		
-	}
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->textBox2->Clear();
 	this->textBox2->BackColor = Color::FromKnownColor(KnownColor::Control);
+	this->textBox2->Text = "None;";
 }
 
 private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -182,7 +183,9 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 			this->textBox2->Text = "Successfully Selected Credit Card;";
 		}
 	}
-	catch (Exception^ ex) {
+	catch (Exception^ e) {
+		Console::WriteLine(e);
+
 		this->textBox2->BackColor = Color::Red;
 		this->textBox2->Text = "Can't put letter in credit card number.";
 	}

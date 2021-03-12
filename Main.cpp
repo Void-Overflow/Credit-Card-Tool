@@ -23,18 +23,11 @@ int main() {
 
 		CreditCardValidator::MyForm form;
 		Application::Run(% form);
+	} else {
+		std::cout << "Configuring Card...\n";
 
-		json.firstName = in_first_name;
-		json.lastName = in_last_name;
-
-		json.set_status();
-		system("CLS");
+		CreditCardValidator::MyForm1 form1;
+		Application::Run(% form1);
 	}
-
-	std::cout << "Configuring Card.../n";
-
-	CreditCardValidator::MyForm1 form;
-	Application::Run(% form);
-
 	return 0;
 }

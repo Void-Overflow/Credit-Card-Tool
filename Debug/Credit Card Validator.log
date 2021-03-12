@@ -1,5 +1,4 @@
 ﻿  Main.cpp
-C:\Users\dehla\Desktop\Visual Studio Projects\C++\Credit Card Validator\MyForm1.h(185,20): warning C4101: 'ex': unreferenced local variable
   jsoncpp.obj : /DEBUG:FASTLINK is not supported when managed code is present; restarting link with /DEBUG:FULL
   jsoncpp.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
   Credit Card Validator.vcxproj -> C:\Users\dehla\Desktop\Visual Studio Projects\C++\Credit Card Validator\Debug\Credit Card Storage System.exe

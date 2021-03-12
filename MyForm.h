@@ -1,6 +1,8 @@
 #pragma once
 
 #include "JsonConfig.h"
+#include "MyForm1.h"
+
 #include <string>
 
 using System::Runtime::InteropServices::Marshal;
@@ -166,7 +168,21 @@ namespace CreditCardValidator {
 		
 
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-		   Application::Exit();
+		JsonConfig json("configuration.json");
+
+		json.configure_file();
+
+		json.firstName = in_first_name;
+		json.lastName = in_last_name;
+
+		json.set_status(); 
+
+		std::cout << "Configuring Card...\n";
+
+		MyForm1^ form1 = gcnew MyForm1;
+
+		this->Hide();
+		form1->ShowDialog();
 	}
 private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 	System::IntPtr pointer = Marshal::StringToHGlobalAnsi(this->textBox1->Text);
