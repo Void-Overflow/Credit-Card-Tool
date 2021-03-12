@@ -59,6 +59,9 @@
     <ClInclude Include="MyForm.h">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="MyForm1.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="configuration.json">

@@ -2,3 +2,4 @@ C:\Users\dehla\Desktop\Visual Studio Projects\C++\Credit Card Validator\Debug\Cr
 C:\Users\dehla\Desktop\Visual Studio Projects\C++\Credit Card Validator\Debug\Credit Card Validator.vcxprojAssemblyReference.cache
 C:\Users\dehla\Desktop\Visual Studio Projects\C++\Credit Card Validator\Debug\CreditCardValidator.MyForm.resources
 C:\Users\dehla\Desktop\Visual Studio Projects\C++\Credit Card Validator\Debug\Credit Card Validator.vcxproj.GenerateResource.cache
+C:\Users\dehla\Desktop\Visual Studio Projects\C++\Credit Card Validator\Debug\CreditCardValidator.MyForm1.resources

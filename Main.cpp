@@ -1,18 +1,18 @@
-#include "Validator.h"
 #include "JsonConfig.h"
 
 #include "MyForm.h"
+#include "MyForm1.h"
 
 #include <iostream>
-#include <string>
-#include <windows.h>
 
 using namespace System;
 using namespace System::Windows::Forms;
 
 [STAThreadAttribute]
 int main() {
-	Validator validation;
+	Application::SetCompatibleTextRenderingDefault(false);
+	Application::EnableVisualStyles();
+
 	JsonConfig json("configuration.json");
 
 	json.configure_file();
@@ -20,8 +20,7 @@ int main() {
 
 	if (json.status == false) {
 		std::cout << "Getting name input from form...\n";
-		Application::EnableVisualStyles();
-		Application::SetCompatibleTextRenderingDefault(false);
+
 		CreditCardValidator::MyForm form;
 		Application::Run(% form);
 
@@ -32,20 +31,10 @@ int main() {
 		system("CLS");
 	}
 
-	unsigned long long int num;
-	std::cout << "Welcome " << json.firstName << "! Please enter a valid credit card number (with no spaces)\n";
-	std::cin >> num;
+	std::cout << "Configuring Card.../n";
 
-	validation.get_num(num);
-	validation.is_valid();
-
-	while (validation.status == false) {
-		std::cout << "Not a valid credit card number, try again:\n";
-		std::cin >> num;
-
-		validation.get_num(num);
-		validation.is_valid();
-	}
+	CreditCardValidator::MyForm1 form;
+	Application::Run(% form);
 
 	return 0;
 }
