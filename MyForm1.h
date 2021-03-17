@@ -129,7 +129,7 @@ namespace CreditCardValidator {
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(86, 28);
 			this->button2->TabIndex = 38;
-			this->button2->Text = L"Sumit";
+			this->button2->Text = L"Submit";
 			this->button2->UseVisualStyleBackColor = false;
 			this->button2->Click += gcnew System::EventHandler(this, &MyForm1::button2_Click);
 			// 

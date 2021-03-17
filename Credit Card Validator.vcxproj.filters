@@ -13,11 +13,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Json">
-      <UniqueIdentifier>{976a05e0-fa5c-47fe-a442-a9cb8c531b5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GUI">
       <UniqueIdentifier>{95fb6c85-08c8-4f5d-a10d-d049d618c0c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SQL">
+      <UniqueIdentifier>{7608623b-cf59-4db9-a899-44f4eef819a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Json">
+      <UniqueIdentifier>{976a05e0-fa5c-47fe-a442-a9cb8c531b5c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -28,7 +31,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\DiscordTyperCpp\jsoncpp-master\dist\jsoncpp.cpp">
-      <Filter>Json</Filter>
+      <Filter>Source Files\Json</Filter>
     </ClCompile>
     <ClCompile Include="Querry.cpp">
       <Filter>Source Files</Filter>
@@ -45,13 +48,13 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Json-cpp\include\json\json.h">
-      <Filter>Json</Filter>
+      <Filter>Source Files\Json</Filter>
     </ClInclude>
     <ClInclude Include="Json-cpp\include\json\forwards.h">
-      <Filter>Json</Filter>
+      <Filter>Source Files\Json</Filter>
     </ClInclude>
     <ClInclude Include="Json-cpp\include\json\writer.h">
-      <Filter>Json</Filter>
+      <Filter>Source Files\Json</Filter>
     </ClInclude>
     <ClInclude Include="Querry.h">
       <Filter>Header Files</Filter>
@@ -66,6 +69,9 @@
   <ItemGroup>
     <None Include="configuration.json">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="script.sql">
+      <Filter>Source Files\SQL</Filter>
     </None>
   </ItemGroup>
 </Project>
