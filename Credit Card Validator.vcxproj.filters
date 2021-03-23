@@ -16,9 +16,6 @@
     <Filter Include="GUI">
       <UniqueIdentifier>{95fb6c85-08c8-4f5d-a10d-d049d618c0c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\SQL">
-      <UniqueIdentifier>{7608623b-cf59-4db9-a899-44f4eef819a2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Json">
       <UniqueIdentifier>{976a05e0-fa5c-47fe-a442-a9cb8c531b5c}</UniqueIdentifier>
     </Filter>
@@ -69,9 +66,6 @@
   <ItemGroup>
     <None Include="configuration.json">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="script.sql">
-      <Filter>Source Files\SQL</Filter>
     </None>
   </ItemGroup>
 </Project>

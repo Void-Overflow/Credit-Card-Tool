@@ -1,6 +1,8 @@
 #pragma once
 
 #include "JsonConfig.h"
+#include "Querry.h"
+
 #include "MyForm1.h"
 
 #include <string>
@@ -160,6 +162,7 @@ namespace CreditCardValidator {
 			this->Controls->Add(this->label1);
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -176,6 +179,13 @@ namespace CreditCardValidator {
 		json.lastName = in_last_name;
 
 		json.set_status(); 
+
+		Querry database;
+		database.db = "Card Validator";
+		
+		database.ConnectDataBase();
+		database.Create_Table(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber text");
+		database.DisconnectDataBase();
 
 		std::cout << "Configuring Card...\n";
 
@@ -200,6 +210,8 @@ private: System::Void textBox2_TextChanged(System::Object^ sender, System::Event
 	Marshal::FreeHGlobal(pointer);
 
 	in_last_name = NameAsString;
+}
+private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 }
 };
 }

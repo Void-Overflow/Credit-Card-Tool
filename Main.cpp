@@ -29,5 +29,8 @@ int main() {
 		CreditCardValidator::MyForm1 form1;
 		Application::Run(% form1);
 	}
+
+	std::string endstr;
+	std::getline(std::cin, endstr);
 	return 0;
 }

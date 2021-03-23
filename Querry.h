@@ -7,19 +7,23 @@ using namespace System::Data::SqlClient;
 ref class ConnectDB{
 protected:
 	SqlConnection^ cnn;
-	String^ sql_file;
 	bool state;
 
 public:
-	ConnectDB(System::String^ in_file);
+	String^ db;
+
 	bool ConnectDataBase();
-	~ConnectDB(void);
+	bool DisconnectDataBase(void);
 };
 
 ref class Querry : public ConnectDB{
 private:
-	Querry() : ConnectDB("script.sql") { };
+	~Querry(void);
 public:
+	bool Create_Table(String^ name, String^ columns);
+
+	bool Read_DB(String^ column, String^ table);
+	bool Write_DB(String^ path, String^ msg);
 };
 
 #endif 

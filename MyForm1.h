@@ -4,8 +4,7 @@
 
 #include "JsonConfig.h"
 #include "Validator.h"
-
-unsigned long long int num;
+#include "Querry.h"
 
 namespace CreditCardValidator {
 
@@ -49,6 +48,8 @@ namespace CreditCardValidator {
 	private: System::Windows::Forms::Button^ button1;
 	private: System::Windows::Forms::PageSetupDialog^ pageSetupDialog1;
 	private: System::Windows::Forms::Button^ button2;
+	private: System::Windows::Forms::BindingSource^ bindingSource1;
+	private: System::ComponentModel::IContainer^ components;
 
 
 	protected:
@@ -57,7 +58,7 @@ namespace CreditCardValidator {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -66,6 +67,7 @@ namespace CreditCardValidator {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
@@ -73,6 +75,8 @@ namespace CreditCardValidator {
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->pageSetupDialog1 = (gcnew System::Windows::Forms::PageSetupDialog());
 			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->bindingSource1 = (gcnew System::Windows::Forms::BindingSource(this->components));
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->bindingSource1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// textBox1
@@ -100,7 +104,7 @@ namespace CreditCardValidator {
 			this->textBox2->Name = L"textBox2";
 			this->textBox2->ReadOnly = true;
 			this->textBox2->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->textBox2->Size = System::Drawing::Size(513, 76);
+			this->textBox2->Size = System::Drawing::Size(513, 101);
 			this->textBox2->TabIndex = 35;
 			this->textBox2->Text = L"None;";
 			// 
@@ -147,11 +151,17 @@ namespace CreditCardValidator {
 			this->Name = L"MyForm1";
 			this->Text = L"MyForm1";
 			this->Load += gcnew System::EventHandler(this, &MyForm1::MyForm1_Load);
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->bindingSource1))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
+
+	Querry data_base;
+	
+	unsigned long long int num;
+
 	private: System::Void MyForm1_Load(System::Object^ sender, System::EventArgs^ e) {
 		JsonConfig json("configuration.json");
 
@@ -159,6 +169,9 @@ namespace CreditCardValidator {
 		json.check_status();
 
 		this->label1->Text = "Welcome " + gcnew String(json.firstName.c_str()) + "! Please enter a valid credit card number!";
+
+		data_base.db = "Card Validator";
+		data_base.ConnectDataBase();
 	}
 		   
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -169,11 +182,13 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 
 private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
 	Validator validation;
+
 	try {
 		num = Convert::ToInt64(this->textBox1->Text->Replace(" ",""));
 
 		validation.get_num(num);
 		validation.is_valid();
+
 		if (validation.status == false) {
 			this->textBox2->BackColor = Color::Red;
 			this->textBox2->Text = "Not a Valid Card Number;";
@@ -181,13 +196,20 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 		else {
 			this->textBox2->BackColor = Color::Green;
 			this->textBox2->Text = "Successfully Selected Credit Card;";
+
+			JsonConfig json("configuration.json");
+
+			json.configure_file();
+			json.check_status();
+
+			data_base.Write_DB(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), Convert::ToString(num));
 		}
 	}
 	catch (Exception^ e) {
 		Console::WriteLine(e);
 
 		this->textBox2->BackColor = Color::Red;
-		this->textBox2->Text = "Can't put letter in credit card number.";
+		this->textBox2->Text = Convert::ToString(e);
 	}
 }
 };
