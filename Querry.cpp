@@ -27,7 +27,30 @@ bool Querry::Create_Table(String^ name, String^ columns) {
 		SqlCommand^ command;
 		SqlDataAdapter^ adapter = gcnew SqlDataAdapter();
 
-		String^ sql = "CREATE TABLE " + name + " (" + columns + ");";
+		String^ sql =
+			"IF EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'" + name + "')\n"
+			"BEGIN\n"
+			"print 'Table name existed, creating unique table name...'\n"
+			"\n"
+			"DECLARE @new__name VARCHAR(64) = '" + name + "' + CONVERT(varchar(32), (CONVERT(int, RAND() * (9 - 1) + 1)))\n"
+			"\n"
+			"WHILE EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @new__name)\n"
+			"BEGIN\n"
+			"SET @new__name = @new__name + CONVERT(varchar(32), (CONVERT(int, RAND() * (9 - 1) + 1)))\n"
+			"END\n"
+			"\n"
+			"IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @new__name)\n"
+			"BEGIN\n"
+			"print @new__name\n"
+			"EXEC('CREATE TABLE ' + @new__name + ' (" + columns + ")')\n"
+			"END\n"
+			"END\n"
+			"\n"
+			"ELSE\n"
+			"BEGIN\n"
+			"print 'Table didnt already exist, successfully created table!'\n"
+			"CREATE TABLE " + name + "(" + columns + ");\n"
+			"END";
 
 		command = gcnew SqlCommand(sql, cnn);
 
@@ -43,21 +66,19 @@ bool Querry::Create_Table(String^ name, String^ columns) {
 	return true;
 }
 
-bool Querry::Read_DB(String^ column, String^ table) {
+int Querry::amt_of_rows(String^ table, String^ column, int column_index) {
+	Object^ output;
+	String^ sql = "SELECT COUNT(" + column + ") FROM " + table;
+
 	try {
 		SqlCommand^ command;
 		SqlDataReader^ dataReader;
 
-		String^ output;
-		String^ sql = "SELECT " + column + " FROM " + table;
-
 		command = gcnew SqlCommand(sql, cnn);
 		dataReader = command->ExecuteReader();
 
-		std::cout << "Reading data from Database...\n";
-
 		while (dataReader->Read()) {
-			output = output + dataReader->GetValue(0) + " - " + dataReader->GetValue(1) + "\n";
+			output = dataReader->GetValue(column_index);
 		}
 
 		//command->Dispose();
@@ -66,20 +87,58 @@ bool Querry::Read_DB(String^ column, String^ table) {
 	catch (Exception^ e) {
 		Console::WriteLine(e);
 
-		return false;
+		std::cout << "Failed to Querry database\n";
+		return 0;
 	}
 
-	return true;
+	return Convert::ToInt32(output);
 }
 
-bool Querry::Write_DB(String^ path, String^ msg) {
+String^ Querry::Read_DB(String^ column, String^ table, int column_index, int row) {
+	String^ output;
+	String^ sql = "SELECT " + column + " FROM " + table;
+
+	try {
+		SqlCommand^ command;
+		SqlDataReader^ dataReader;
+
+
+		command = gcnew SqlCommand(sql, cnn);
+		dataReader = command->ExecuteReader();
+
+		std::cout << "Reading data from Database...\n";
+
+		int counter = 0;
+		while (dataReader->Read()) {
+			if (counter == row)
+				output = (String^)dataReader->GetValue(column_index);
+
+			counter++;
+		}
+
+		//command->Dispose();
+		dataReader->Close();
+	}
+	catch (Exception^ e) {
+		Console::WriteLine(e);
+
+		std::cout << "Failed to Querry database\n";
+		return "1";
+	}
+
+	return output;
+}
+
+bool Querry::Write_DB(String^ table,String^ column ,String^ msg) {
 	try {
 		SqlCommand^ command;
 		SqlDataAdapter^ adapter = gcnew SqlDataAdapter();
 
-		String^ sql = "INSERT INTO " +  path +  " VALUES ('" + msg + "')";
+		String^ sql = "INSERT INTO " + table + " (" + column+ ") VALUES ('" + msg + "')";
 
 		command = gcnew SqlCommand(sql, cnn);
+
+		std::cout << "Writing to database...\n";
 
 		adapter->InsertCommand = gcnew SqlCommand(sql, cnn);
 		adapter->InsertCommand->ExecuteNonQuery();

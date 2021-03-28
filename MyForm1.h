@@ -41,7 +41,7 @@ namespace CreditCardValidator {
 			}
 		}
 
-	private: System::Windows::Forms::TextBox^ textBox1;
+
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::TextBox^ textBox2;
 	private: System::Windows::Forms::Label^ label1;
@@ -49,6 +49,7 @@ namespace CreditCardValidator {
 	private: System::Windows::Forms::PageSetupDialog^ pageSetupDialog1;
 	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::BindingSource^ bindingSource1;
+	private: System::Windows::Forms::ComboBox^ comboBox1;
 	private: System::ComponentModel::IContainer^ components;
 
 
@@ -68,7 +69,6 @@ namespace CreditCardValidator {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
-			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
@@ -76,15 +76,9 @@ namespace CreditCardValidator {
 			this->pageSetupDialog1 = (gcnew System::Windows::Forms::PageSetupDialog());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->bindingSource1 = (gcnew System::Windows::Forms::BindingSource(this->components));
+			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->bindingSource1))->BeginInit();
 			this->SuspendLayout();
-			// 
-			// textBox1
-			// 
-			this->textBox1->Location = System::Drawing::Point(35, 66);
-			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(183, 20);
-			this->textBox1->TabIndex = 1;
 			// 
 			// label2
 			// 
@@ -129,7 +123,7 @@ namespace CreditCardValidator {
 			// button2
 			// 
 			this->button2->BackColor = System::Drawing::Color::ForestGreen;
-			this->button2->Location = System::Drawing::Point(83, 92);
+			this->button2->Location = System::Drawing::Point(243, 60);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(86, 28);
 			this->button2->TabIndex = 38;
@@ -137,17 +131,26 @@ namespace CreditCardValidator {
 			this->button2->UseVisualStyleBackColor = false;
 			this->button2->Click += gcnew System::EventHandler(this, &MyForm1::button2_Click);
 			// 
+			// comboBox1
+			// 
+			this->comboBox1->FormattingEnabled = true;
+			this->comboBox1->Location = System::Drawing::Point(35, 65);
+			this->comboBox1->Name = L"comboBox1";
+			this->comboBox1->Size = System::Drawing::Size(191, 21);
+			this->comboBox1->TabIndex = 39;
+			this->comboBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm1::comboBox1_SelectedIndexChanged);
+			// 
 			// MyForm1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(973, 471);
+			this->Controls->Add(this->comboBox1);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->label2);
-			this->Controls->Add(this->textBox1);
 			this->Name = L"MyForm1";
 			this->Text = L"MyForm1";
 			this->Load += gcnew System::EventHandler(this, &MyForm1::MyForm1_Load);
@@ -165,13 +168,18 @@ namespace CreditCardValidator {
 	private: System::Void MyForm1_Load(System::Object^ sender, System::EventArgs^ e) {
 		JsonConfig json("configuration.json");
 
-		json.configure_file();
+		json.configure_file(); 
 		json.check_status();
 
-		this->label1->Text = "Welcome " + gcnew String(json.firstName.c_str()) + "! Please enter a valid credit card number!";
+		this->label1->Text = "Welcome " + gcnew String(json.firstName.c_str()) + "! Please enter or select a valid credit card number!";
 
 		data_base.db = "Card Validator";
 		data_base.ConnectDataBase();
+
+		for (int i = 0; i < data_base.amt_of_rows(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber", 0); i++){
+			if (Convert::ToInt64(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i)) != NULL)
+				comboBox1->Items->Add(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i));
+		}
 	}
 		   
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -182,9 +190,10 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 
 private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
 	Validator validation;
+	JsonConfig json("configuration.json");
 
 	try {
-		num = Convert::ToInt64(this->textBox1->Text->Replace(" ",""));
+		num = Convert::ToInt64(this->comboBox1->Text->Replace(" ",""));
 
 		validation.get_num(num);
 		validation.is_valid();
@@ -197,12 +206,15 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 			this->textBox2->BackColor = Color::Green;
 			this->textBox2->Text = "Successfully Selected Credit Card;";
 
-			JsonConfig json("configuration.json");
-
 			json.configure_file();
 			json.check_status();
 
-			data_base.Write_DB(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), Convert::ToString(num));
+			data_base.Write_DB(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber" , Convert::ToString(num));
+
+			int rows = data_base.amt_of_rows(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber", 0);
+
+			if (Convert::ToInt64(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, rows - 1)) != NULL)
+				comboBox1->Items->Add(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, rows - 1));
 		}
 	}
 	catch (Exception^ e) {
@@ -211,6 +223,9 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 		this->textBox2->BackColor = Color::Red;
 		this->textBox2->Text = Convert::ToString(e);
 	}
+}
+
+private: System::Void comboBox1_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 };
 }

@@ -184,7 +184,7 @@ namespace CreditCardValidator {
 		database.db = "Card Validator";
 		
 		database.ConnectDataBase();
-		database.Create_Table(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber text");
+		database.Create_Table(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber varchar(MAX)");
 		database.DisconnectDataBase();
 
 		std::cout << "Configuring Card...\n";
