@@ -170,6 +170,7 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Querry.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Validator.h" />
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +200,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="configuration.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Credit Card Storage System.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -68,6 +68,7 @@ namespace CreditCardValidator {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->label2 = (gcnew System::Windows::Forms::Label());
@@ -160,6 +161,7 @@ namespace CreditCardValidator {
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label1);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
@@ -211,7 +213,10 @@ private: System::Void textBox2_TextChanged(System::Object^ sender, System::Event
 
 	in_last_name = NameAsString;
 }
+	   
+	   
 private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+	MyForm::Text = "Comyar's Credit Card Tool";
 }
 };
 }

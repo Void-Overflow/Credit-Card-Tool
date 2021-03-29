@@ -154,6 +154,31 @@ bool Querry::Write_DB(String^ table,String^ column ,String^ msg) {
 	return true;
 }
 
+bool Querry::Delete_Row(String^ table, String^ condition) {
+	try {
+		SqlCommand^ command;
+		SqlDataAdapter^ adapter = gcnew SqlDataAdapter();
+
+		String^ sql = "DELETE FROM " + table + " WHERE " + condition;
+
+		command = gcnew SqlCommand(sql, cnn);
+
+		std::cout << "Deleting row from previous query...\n";
+
+		adapter->InsertCommand = gcnew SqlCommand(sql, cnn);
+		adapter->InsertCommand->ExecuteNonQuery();
+
+		//command->Dispose();
+	}
+	catch (Exception^ e) {
+		Console::WriteLine(e);
+
+		return false;
+	}
+
+	return true;
+}
+
 bool ConnectDB::DisconnectDataBase() {
 	try {
 		std::cout << "Successfully Disconnected from Database!\n";

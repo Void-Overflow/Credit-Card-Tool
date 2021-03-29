@@ -50,6 +50,10 @@ namespace CreditCardValidator {
 	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::BindingSource^ bindingSource1;
 	private: System::Windows::Forms::ComboBox^ comboBox1;
+	private: System::Windows::Forms::Label^ label3;
+	private: System::Windows::Forms::ComboBox^ comboBox2;
+	private: System::Windows::Forms::Button^ button3;
+	private: System::Windows::Forms::Label^ label4;
 	private: System::ComponentModel::IContainer^ components;
 
 
@@ -69,6 +73,7 @@ namespace CreditCardValidator {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm1::typeid));
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
@@ -77,13 +82,17 @@ namespace CreditCardValidator {
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->bindingSource1 = (gcnew System::Windows::Forms::BindingSource(this->components));
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
+			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->comboBox2 = (gcnew System::Windows::Forms::ComboBox());
+			this->button3 = (gcnew System::Windows::Forms::Button());
+			this->label4 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->bindingSource1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(399, 10);
+			this->label2->Location = System::Drawing::Point(399, 14);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(58, 13);
 			this->label2->TabIndex = 2;
@@ -98,14 +107,14 @@ namespace CreditCardValidator {
 			this->textBox2->Name = L"textBox2";
 			this->textBox2->ReadOnly = true;
 			this->textBox2->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->textBox2->Size = System::Drawing::Size(513, 101);
+			this->textBox2->Size = System::Drawing::Size(513, 103);
 			this->textBox2->TabIndex = 35;
 			this->textBox2->Text = L"None;";
 			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(32, 44);
+			this->label1->Location = System::Drawing::Point(70, 14);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(0, 13);
 			this->label1->TabIndex = 36;
@@ -140,17 +149,59 @@ namespace CreditCardValidator {
 			this->comboBox1->TabIndex = 39;
 			this->comboBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm1::comboBox1_SelectedIndexChanged);
 			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Location = System::Drawing::Point(32, 98);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(173, 13);
+			this->label3->TabIndex = 40;
+			this->label3->Text = L"Select a card to delete from the list:";
+			// 
+			// comboBox2
+			// 
+			this->comboBox2->FormattingEnabled = true;
+			this->comboBox2->Location = System::Drawing::Point(35, 124);
+			this->comboBox2->Name = L"comboBox2";
+			this->comboBox2->Size = System::Drawing::Size(191, 21);
+			this->comboBox2->TabIndex = 41;
+			// 
+			// button3
+			// 
+			this->button3->BackColor = System::Drawing::Color::Crimson;
+			this->button3->Location = System::Drawing::Point(243, 119);
+			this->button3->Name = L"button3";
+			this->button3->Size = System::Drawing::Size(86, 28);
+			this->button3->TabIndex = 42;
+			this->button3->Text = L"Delete";
+			this->button3->UseVisualStyleBackColor = false;
+			this->button3->Click += gcnew System::EventHandler(this, &MyForm1::button3_Click);
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Location = System::Drawing::Point(32, 44);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(150, 13);
+			this->label4->TabIndex = 43;
+			this->label4->Text = L"Select or enter a card number:";
+			// 
 			// MyForm1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(973, 471);
+			this->Controls->Add(this->label4);
+			this->Controls->Add(this->button3);
+			this->Controls->Add(this->comboBox2);
+			this->Controls->Add(this->label3);
 			this->Controls->Add(this->comboBox1);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->label2);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"MyForm1";
 			this->Text = L"MyForm1";
 			this->Load += gcnew System::EventHandler(this, &MyForm1::MyForm1_Load);
@@ -162,23 +213,27 @@ namespace CreditCardValidator {
 #pragma endregion
 
 	Querry data_base;
-	
 	unsigned long long int num;
 
-	private: System::Void MyForm1_Load(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void MyForm1_Load(System::Object^ sender, System::EventArgs^ e){
+		MyForm1::Text = "Comyar's Credit Card Tool";
 		JsonConfig json("configuration.json");
 
 		json.configure_file(); 
 		json.check_status();
 
-		this->label1->Text = "Welcome " + gcnew String(json.firstName.c_str()) + "! Please enter or select a valid credit card number!";
+		
+		this->label1->Font = gcnew Drawing::Font(label1->Font, FontStyle::Bold);
+		this->label1->Text = "Welcome " + gcnew String(json.firstName.c_str());
 
 		data_base.db = "Card Validator";
 		data_base.ConnectDataBase();
 
 		for (int i = 0; i < data_base.amt_of_rows(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber", 0); i++){
-			if (Convert::ToInt64(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i)) != NULL)
+			if (Convert::ToInt64(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i)) != NULL) {
 				comboBox1->Items->Add(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i));
+				comboBox2->Items->Add(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i));
+			}
 		}
 	}
 		   
@@ -213,8 +268,10 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 
 			int rows = data_base.amt_of_rows(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber", 0);
 
-			if (Convert::ToInt64(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, rows - 1)) != NULL)
+			if (Convert::ToInt64(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, rows - 1)) != NULL) {
 				comboBox1->Items->Add(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, rows - 1));
+				comboBox2->Items->Add(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, rows - 1));
+			}
 		}
 	}
 	catch (Exception^ e) {
@@ -226,6 +283,22 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 }
 
 private: System::Void comboBox1_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+
+private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
+	String^ item = Convert::ToString(comboBox2->SelectedItem);
+	JsonConfig json("configuration.json");
+
+	json.configure_file();
+	json.check_status();
+
+	comboBox1->Items->Remove(item);
+	comboBox2->Items->Remove(item);
+
+	this->textBox2->BackColor = Color::Green;
+	this->textBox2->Text = "Successfully removed " + item + " from available cards;";
+
+	data_base.Delete_Row(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber = " + item);
 }
 };
 }
