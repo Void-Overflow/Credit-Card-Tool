@@ -54,6 +54,9 @@ namespace CreditCardValidator {
 	private: System::Windows::Forms::ComboBox^ comboBox2;
 	private: System::Windows::Forms::Button^ button3;
 	private: System::Windows::Forms::Label^ label4;
+	private: System::Windows::Forms::Label^ label5;
+	private: System::Windows::Forms::TextBox^ textBox1;
+	private: System::Windows::Forms::Button^ button4;
 	private: System::ComponentModel::IContainer^ components;
 
 
@@ -86,6 +89,9 @@ namespace CreditCardValidator {
 			this->comboBox2 = (gcnew System::Windows::Forms::ComboBox());
 			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->button4 = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->bindingSource1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -186,11 +192,41 @@ namespace CreditCardValidator {
 			this->label4->TabIndex = 43;
 			this->label4->Text = L"Select or enter a card number:";
 			// 
+			// label5
+			// 
+			this->label5->AutoSize = true;
+			this->label5->Location = System::Drawing::Point(32, 178);
+			this->label5->Name = L"label5";
+			this->label5->Size = System::Drawing::Size(69, 13);
+			this->label5->TabIndex = 44;
+			this->label5->Text = L"Amount Due:";
+			// 
+			// textBox1
+			// 
+			this->textBox1->Location = System::Drawing::Point(35, 203);
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->Size = System::Drawing::Size(191, 20);
+			this->textBox1->TabIndex = 45;
+			// 
+			// button4
+			// 
+			this->button4->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
+			this->button4->Location = System::Drawing::Point(107, 173);
+			this->button4->Name = L"button4";
+			this->button4->Size = System::Drawing::Size(82, 23);
+			this->button4->TabIndex = 46;
+			this->button4->Text = L"Set";
+			this->button4->UseVisualStyleBackColor = false;
+			this->button4->Click += gcnew System::EventHandler(this, &MyForm1::button4_Click);
+			// 
 			// MyForm1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(973, 471);
+			this->Controls->Add(this->button4);
+			this->Controls->Add(this->textBox1);
+			this->Controls->Add(this->label5);
 			this->Controls->Add(this->label4);
 			this->Controls->Add(this->button3);
 			this->Controls->Add(this->comboBox2);
@@ -229,10 +265,12 @@ namespace CreditCardValidator {
 		data_base.db = "Card Validator";
 		data_base.ConnectDataBase();
 
-		for (int i = 0; i < data_base.amt_of_rows(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber", 0); i++){
-			if (Convert::ToInt64(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i)) != NULL) {
-				comboBox1->Items->Add(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i));
-				comboBox2->Items->Add(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i));
+		for (int i = 0; i < data_base.amt_of_rows(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "COALESCE(CardNumber,'')", 0); i++){
+			if (Convert::ToInt64(data_base.Read_DB("COALESCE(CardNumber,'1')", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i)) != NULL) {
+				if (data_base.Read_DB("COALESCE(CardNumber,'1')", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i) != "1") {
+					comboBox1->Items->Add(data_base.Read_DB("COALESCE(CardNumber,'1')", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i));
+					comboBox2->Items->Add(data_base.Read_DB("COALESCE(CardNumber,'1')", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i));
+				}
 			}
 		}
 	}
@@ -266,14 +304,11 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 
 			data_base.Write_DB(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber" , Convert::ToString(num));
 
-			int rows = data_base.amt_of_rows(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber", 0);
-
-			if (Convert::ToInt64(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, rows - 1)) != NULL) {
-				comboBox1->Items->Add(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, rows - 1));
-				comboBox2->Items->Add(data_base.Read_DB("CardNumber", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, rows - 1));
-			}
+			comboBox1->Items->Add(Convert::ToString(num));
+			comboBox2->Items->Add(Convert::ToString(num));
 		}
 	}
+
 	catch (Exception^ e) {
 		Console::WriteLine(e);
 
@@ -283,22 +318,77 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 }
 
 private: System::Void comboBox1_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-}
-
-private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
-	String^ item = Convert::ToString(comboBox2->SelectedItem);
 	JsonConfig json("configuration.json");
+	String^ item = Convert::ToString(this->comboBox1->Text->Replace(" ", ""));
 
 	json.configure_file();
 	json.check_status();
 
-	comboBox1->Items->Remove(item);
-	comboBox2->Items->Remove(item);
+	try {
+		if (data_base.does_exist(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "COALESCE(\"" + item + "due\",'')", 0)) {
+			for (int i = 0; i < data_base.amt_of_rows(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "COALESCE(\"" + item + "due\",'')", 0); i++) {
+				int rows = data_base.amt_of_rows(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "COALESCE(\"" + item + "due\",'')", 0);
+				if (data_base.Read_DB("COALESCE(\"" + item + "due\",'1')", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i) != "1")
+					textBox1->Text = data_base.Read_DB("COALESCE(\"" + item + "due\",'')", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i);
+			}
+		}
+	}
 
-	this->textBox2->BackColor = Color::Green;
-	this->textBox2->Text = "Successfully removed " + item + " from available cards;";
+	catch (Exception^ e) {
+		Console::WriteLine(e);
 
-	data_base.Delete_Row(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber = " + item);
+		this->textBox2->BackColor = Color::Red;
+		this->textBox2->Text = Convert::ToString(e);
+	}
+}
+
+private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
+	try {
+		String^ item = Convert::ToString(this->comboBox2->Text->Replace(" ", ""));
+		JsonConfig json("configuration.json");
+
+		json.configure_file();
+		json.check_status();
+
+		comboBox1->Items->Remove(item);
+		comboBox2->Items->Remove(item);
+
+		this->textBox2->BackColor = Color::Green;
+		this->textBox2->Text = "Successfully removed " + item + " from available cards;";
+
+		data_base.Delete_Row(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "COALESCE(CardNumber, '1') = " + item);
+		data_base.Delete_Column(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "\"" + item + "due\"");
+	}
+	catch (Exception^ e) {
+		Console::WriteLine(e);
+
+		this->textBox2->BackColor = Color::Red;
+		this->textBox2->Text = Convert::ToString(e);
+	}
+}
+
+private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) {
+	JsonConfig json("configuration.json");
+	String^ item = Convert::ToString(this->comboBox1->Text->Replace(" ", ""));
+
+	json.configure_file();
+	json.check_status();
+
+	try {
+		data_base.Create_Column("\"" + item + "due\"" , gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "varchar(255)");
+		data_base.Write_DB(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "\"" + item + "due\"", textBox1->Text);
+
+		std::cout << "Added new amount due...\n";
+		this->textBox2->BackColor = Color::Green;
+		this->textBox2->Text = "Added " + textBox1->Text + " as amount due for " +comboBox1->Text;
+	}
+
+	catch(Exception^ e){
+		Console::WriteLine(e);
+
+		this->textBox2->BackColor = Color::Red;
+		this->textBox2->Text = Convert::ToString(e);
+	}
 }
 };
 }

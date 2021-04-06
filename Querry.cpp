@@ -66,6 +66,50 @@ bool Querry::Create_Table(String^ name, String^ columns) {
 	return true;
 }
 
+bool Querry::Create_Column(String^ name, String^ table, String^ datatype) {
+	try {
+		SqlCommand^ command;
+		SqlDataAdapter^ adapter = gcnew SqlDataAdapter();
+
+		String^ sql =
+			"IF EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'" + name + "')\n"
+			"BEGIN\n"
+			"print 'column name existed, creating unique column name...'\n"
+			"\n"
+			"DECLARE @new__name VARCHAR(64) = '" + name + "' + CONVERT(varchar(32), (CONVERT(int, RAND() * (9 - 1) + 1)))\n"
+			"\n"
+			"WHILE EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @new__name)\n"
+			"BEGIN\n"
+			"SET @new__name = @new__name + CONVERT(varchar(32), (CONVERT(int, RAND() * (9 - 1) + 1)))\n"
+			"END\n"
+			"\n"
+			"IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @new__name)\n"
+			"BEGIN\n"
+			"print @new__name\n"
+			"EXEC('ALTER TABLE " + table + "\nADD " + name + " " + datatype + "')\n"
+			"END\n"
+			"END\n"
+			"ELSE\n"
+			"BEGIN\n"
+			"print 'column didnt already exist, successfully created column!'\n"
+			"ALTER TABLE " + table  +"\nADD " + name + " " + datatype + "\n"
+			"\n"
+			"END";
+
+		command = gcnew SqlCommand(sql, cnn);
+
+		adapter->InsertCommand = gcnew SqlCommand(sql, cnn);
+		adapter->InsertCommand->ExecuteNonQuery();
+	}
+	catch (Exception^ e) {
+		Console::WriteLine(e);
+
+		return false;
+	}
+
+	return true;
+}
+
 int Querry::amt_of_rows(String^ table, String^ column, int column_index) {
 	Object^ output;
 	String^ sql = "SELECT COUNT(" + column + ") FROM " + table;
@@ -92,6 +136,36 @@ int Querry::amt_of_rows(String^ table, String^ column, int column_index) {
 	}
 
 	return Convert::ToInt32(output);
+}
+
+bool Querry::does_exist(String^ table, String^ column, int column_index) {
+	String^ output;
+	String^ sql =" IF COL_LENGTH('" + table + "', '" + column + "') IS NOT NULL\n BEGIN \n print '1' \n END \n ELSE \n BEGIN \n print '0' \n END";
+
+	try {
+		SqlCommand^ command;
+		SqlDataReader^ dataReader;
+
+
+		command = gcnew SqlCommand(sql, cnn);
+		dataReader = command->ExecuteReader();
+
+		std::cout << "Reading data from Database...\n";
+
+		while (dataReader->Read()) 
+			output = (String^)dataReader->GetValue(column_index);
+
+		//command->Dispose();
+		dataReader->Close();
+	}
+	catch (Exception^ e) {
+		Console::WriteLine(e);
+
+		std::cout << "Failed to Querry database\n";
+		return false;
+	}
+
+	return true;
 }
 
 String^ Querry::Read_DB(String^ column, String^ table, int column_index, int row) {
@@ -164,6 +238,31 @@ bool Querry::Delete_Row(String^ table, String^ condition) {
 		command = gcnew SqlCommand(sql, cnn);
 
 		std::cout << "Deleting row from previous query...\n";
+
+		adapter->InsertCommand = gcnew SqlCommand(sql, cnn);
+		adapter->InsertCommand->ExecuteNonQuery();
+
+		//command->Dispose();
+	}
+	catch (Exception^ e) {
+		Console::WriteLine(e);
+
+		return false;
+	}
+
+	return true;
+}
+
+bool Querry::Delete_Column(String^ table, String^ column) {
+	try {
+		SqlCommand^ command;
+		SqlDataAdapter^ adapter = gcnew SqlDataAdapter();
+
+		String^ sql = "ALTER TABLE " + table + " DROP COLUMN " + column;
+
+		command = gcnew SqlCommand(sql, cnn);
+
+		std::cout << "Deleting column from previous query...\n";
 
 		adapter->InsertCommand = gcnew SqlCommand(sql, cnn);
 		adapter->InsertCommand->ExecuteNonQuery();
