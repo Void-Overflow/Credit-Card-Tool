@@ -32,6 +32,7 @@ public:
 
     int amt_of_rows(String^ table, String^ column, int column_index);
     bool does_exist(String^ table, String^ column, int column_index);
+    bool table_exist(String^ table, int column_index);
 };
 
 #endif 

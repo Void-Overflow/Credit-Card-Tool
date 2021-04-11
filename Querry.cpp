@@ -140,7 +140,7 @@ int Querry::amt_of_rows(String^ table, String^ column, int column_index) {
 
 bool Querry::does_exist(String^ table, String^ column, int column_index) {
 	String^ output;
-	String^ sql =" IF COL_LENGTH('" + table + "', '" + column + "') IS NOT NULL\n BEGIN \n print '1' \n END \n ELSE \n BEGIN \n print '0' \n END";
+	String^ sql = " IF COL_LENGTH('" + table + "', '" + column + "') IS NOT NULL\n BEGIN \n SELECT '1' \n END \n ELSE \n BEGIN \n SELECT '0' \n END";
 
 	try {
 		SqlCommand^ command;
@@ -152,7 +152,7 @@ bool Querry::does_exist(String^ table, String^ column, int column_index) {
 
 		std::cout << "Reading data from Database...\n";
 
-		while (dataReader->Read()) 
+		while (dataReader->Read())
 			output = (String^)dataReader->GetValue(column_index);
 
 		//command->Dispose();
@@ -164,8 +164,42 @@ bool Querry::does_exist(String^ table, String^ column, int column_index) {
 		std::cout << "Failed to Querry database\n";
 		return false;
 	}
+	if (output == "1")
+		return false;
+	else
+		return true;
+}
 
-	return true;
+bool Querry::table_exist(String^ table, int column_index) {
+	String^ output;
+	String^ sql = "IF OBJECT_ID('[Card Validator].dbo." + table + "') IS NOT NULL  BEGIN  SELECT '1'  END  ELSE  BEGIN  SELECT '0'  END";
+
+	try {
+		SqlCommand^ command;
+		SqlDataReader^ dataReader;
+
+
+		command = gcnew SqlCommand(sql, cnn);
+		dataReader = command->ExecuteReader();
+
+		std::cout << "Reading data from Database...\n";
+
+		while (dataReader->Read())
+			output = (String^)dataReader->GetValue(column_index);
+
+		//command->Dispose();
+		dataReader->Close();
+	}
+	catch (Exception^ e) {
+		Console::WriteLine(e);
+
+		std::cout << "Failed to Querry database\n";
+		return false;
+	}
+	if (output == "1")
+		return true;
+	else
+		return false;
 }
 
 String^ Querry::Read_DB(String^ column, String^ table, int column_index, int row) {

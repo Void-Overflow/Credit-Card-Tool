@@ -421,7 +421,7 @@ namespace CreditCardValidator {
 	private: System::Void MyForm1_Load(System::Object^ sender, System::EventArgs^ e){
 		MyForm1::Text = "Comyar's Credit Card Tool";
 		JsonConfig json("configuration.json");
-
+		
 		json.configure_file(); 
 		json.check_status();
 
@@ -436,6 +436,8 @@ namespace CreditCardValidator {
 
 		data_base.db = "Card Validator";
 		data_base.ConnectDataBase();
+
+		data_base.Delete_Row(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber = NULL");
 
 		for (int i = 0; i < data_base.amt_of_rows(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "COALESCE(CardNumber,'')", 0); i++){
 			if (Convert::ToInt64(data_base.Read_DB("COALESCE(CardNumber,'1')", gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0, i)) != NULL) {

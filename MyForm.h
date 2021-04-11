@@ -180,21 +180,31 @@ namespace CreditCardValidator {
 		json.firstName = in_first_name;
 		json.lastName = in_last_name;
 
-		json.set_status(); 
-
 		Querry database;
+		bool status = false;
 		database.db = "Card Validator";
 		
 		database.ConnectDataBase();
-		database.Create_Table(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber varchar(MAX)");
+		if (database.table_exist(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), 0) == true) {
+			status = false;
+			MessageBox::Show("There is already someone using that name. Try making your name unique by adding extra numbers to your last name.", "Name taken");
+		}
+		else {
+			json.set_status();
+			status = true;
+			database.Create_Table(gcnew String(json.lastName.c_str()) + gcnew String(json.firstName.c_str()), "CardNumber varchar(MAX)");
+		}
+		
 		database.DisconnectDataBase();
 
-		std::cout << "Configuring Card...\n";
+		if (status == true) {
+			std::cout << "Configuring Card...\n";
 
-		MyForm1^ form1 = gcnew MyForm1;
+			MyForm1^ form1 = gcnew MyForm1;
 
-		this->Hide();
-		form1->ShowDialog();
+			this->Hide();
+			form1->ShowDialog();
+		}
 	}
 private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 	System::IntPtr pointer = Marshal::StringToHGlobalAnsi(this->textBox1->Text);
